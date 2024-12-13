@@ -31,19 +31,41 @@ logging.basicConfig(
     ]
 )
 
-# 加载环境变量
-load_dotenv()
-
 class NodeseekMonitor:
     def __init__(self):
+        # 加载环境变量
+        load_dotenv()
+        
+        # 获取并验证环境变量
         self.bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+        if not self.bot_token:
+            raise ValueError("TELEGRAM_BOT_TOKEN not found in environment variables")
+            
         self.chat_id = os.getenv('CHAT_ID')
-        self.keywords = os.getenv('KEYWORDS').lower().split(',')
-        self.check_interval = int(os.getenv('CHECK_INTERVAL'))
+        if not self.chat_id:
+            raise ValueError("CHAT_ID not found in environment variables")
+            
+        keywords = os.getenv('KEYWORDS')
+        if not keywords:
+            raise ValueError("KEYWORDS not found in environment variables")
+        self.keywords = keywords.lower().split(',')
+        
+        self.check_interval = int(os.getenv('CHECK_INTERVAL', '120'))
+        
         self.target_url = os.getenv('TARGET_URL')
+        if not self.target_url:
+            raise ValueError("TARGET_URL not found in environment variables")
+            
+        # 初始化其他组件
         self.bot = Bot(token=self.bot_token)
         self.seen_posts_file = 'seen_posts.json'
         self.seen_posts = self.load_seen_posts()
+        
+        # 记录配置信息
+        logging.info(f"配置加载完成:")
+        logging.info(f"- 目标URL: {self.target_url}")
+        logging.info(f"- 关键词: {self.keywords}")
+        logging.info(f"- 检查间隔: {self.check_interval}秒")
         
         # 设置Chrome选项
         self.chrome_options = Options()
