@@ -15,21 +15,32 @@ fi
 # 安装系统依赖
 echo "正在安装系统依赖..."
 apt update
-apt install -y python3 python3-pip python3-venv firefox-esr firefox-geckodriver git
+apt install -y python3 python3-pip python3-venv firefox-esr firefox-geckodriver git curl wget
+
+# 确保python3-venv已安装
+apt install -y python3-venv
 
 # 创建安装目录
 echo "创建安装目录..."
 mkdir -p /opt/website-monitor
 cd /opt/website-monitor
 
-# 克隆代码
-echo "下载程序代码..."
-git clone https://github.com/Zjjdg/website-monitor-bot.git .
+# 下载所需文件
+echo "下载程序文件..."
+wget -O main.py https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/main.py
+wget -O monitor.py https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/monitor.py
+wget -O start.sh https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/start.sh
+wget -O stop.sh https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/stop.sh
+wget -O requirements.txt https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/requirements.txt
+wget -O .env.example https://raw.githubusercontent.com/Zjjdg/website-monitor-bot/master/.env.example
 
 # 创建虚拟环境
 echo "创建Python虚拟环境..."
 python3 -m venv venv
 source venv/bin/activate
+
+# 升级pip
+python3 -m pip install --upgrade pip
 
 # 安装Python依赖
 echo "安装Python依赖..."
