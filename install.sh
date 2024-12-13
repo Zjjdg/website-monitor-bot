@@ -81,6 +81,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/opt/website-monitor
+EnvironmentFile=/opt/website-monitor/.env
 ExecStart=/opt/website-monitor/venv/bin/python3 main.py
 Restart=always
 RestartSec=10
